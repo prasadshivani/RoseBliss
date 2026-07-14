@@ -1,0 +1,138 @@
+{
+  "lipsticks": [
+    { "id": 4, "name": "Berry Luxe Matte", "price": 529, "type": "matte", "image": "https://smytten-image.gumlet.io/shop_item/REC003AE1441.jpg","description": "Long-lasting matte lipstick with rich color and smooth finish." },
+  { "id": 1, "name": "Velvet Touch Matte", "price": 499, "type": "matte", "image": "https://goshcopenhagen.com/media/catalog/product/cache/25f8177aba4b3177f677dbebbbda0bce/5/7/5711914064228.jpg"  },
+  { "id": 2, "name": "Crimson Kiss Matte", "price": 549, "type": "matte", "image":"https://cdn.tirabeauty.com/v2/billowing-snowflake-434234/tira-p/wrkr/products/pictures/item/free/resize-w:540/1142830/R_mGzgPj5Wj-1142830_1.jpg" },
+  { "id": 3, "name": "Nude Elegance Matte", "price": 479, "type": "matte", "image": "https://m.media-amazon.com/images/I/51d9x86bXqL._AC_UF1000,1000_QL80_.jpg"},
+  
+  { "id": 6, "name": "Mulberry Glow Gloss", "price": 499, "type": "glossy", "image": "https://facefacts.co.nz/cdn/shop/files/80098707_original_original_X.webp?v=1722399125&width=680" },
+  { "id": 7, "name": "Rich Mulberry Shine", "price": 549, "type": "glossy", "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9W4wz7q2-uHeZPUujRTYV-B10ink6SdiYZw&s"},
+  { "id": 8, "name": "Berry Liquid Luxe", "price": 479, "type": "liquid", "image": "https://images.jdmagicbox.com/quickquotes/images_main/color-luxe-matte-lip-color-lips-flirty-berry-m15-2224266686-rcwovu7y.jpg" },
+  { "id": 9, "name": "Plum Cream Touch", "price": 529, "type": "cream", "image": "https://m.media-amazon.com/images/I/61Jm1YFmZbL._AC_UF1000,1000_QL80_.jpg" },
+
+  { "id": 16, "name": "Velvet Mauve Gloss", "price": 499, "type": "glossy", "image": "" },
+  { "id": 17, "name": "Soft Velvet Mauve Shine", "price": 549, "type": "glossy", "image": "" },
+  { "id": 18, "name": "Dusty Elegant Mauve Liquid", "price": 479, "type": "liquid", "image": ""},
+  { "id": 19, "name": "Mauve Cream Luxe", "price": 529, "type": "cream", "image": "" },
+
+  { "id": 24, "name": "Nude Perfection Gloss", "price": 499, "type": "glossy", "image": "" },
+  { "id": 25, "name": "Soft Everyday Nude Shine", "price": 549, "type": "glossy", "image": "" },
+  { "id": 26, "name": "Natural Nude Liquid Lip", "price": 479, "type": "liquid", "image": "" },
+  { "id": 27, "name": "Creamy Nude Touch", "price": 529, "type": "cream", "image": "" }
+  ],
+  
+  
+  "skincare": [
+  { "id": 31, "name": "Gentle Cleanser Hydrating Wash", "price": 399, "type": "cleanser", "image": "https://m.media-amazon.com/images/I/61ien1bvs+L.jpg" },
+  { "id": 32, "name": "Hyaluronic Chamomile Face Cleanser", "price": 449, "type": "cleanser", "image": "https://images-static.nykaa.com/media/catalog/product/8/c/8c65e48FIXDE00000077_1.jpg" },
+  { "id": 33, "name": "Soothing Chamomile Gel Cleanser", "price": 379, "type": "cleanser", "image": "https://www.byrdie.com/thmb/wm7iey59UUEv9-66HImVGzdyPEQ=/fit-in/1500x1000/filters:no_upscale():max_bytes(150000):strip_icc()/Mad-Hippie-Jelly-Cleanser-f0e8f2f9ce574eb09ffb083dd753bf74.jpg" },
+  { "id": 34, "name": "Hydra Glow Gentle Face Wash", "price": 429, "type": "cleanser", "image": "https://cdn.hyperspeed.me/image/https://www.glutone.in/cdn/shop/files/Glutone-Hydra-Facewash-Glutone-102740831.png?v=1770284255&width=1946&hsv=16" },
+
+  { "id": 38, "name": "Vitamin C Brightening Serum", "price": 599, "type": "serum", "image": "" },
+  { "id": 39, "name": "20% Vitamin C Glow Booster", "price": 649, "type": "serum", "image": "" },
+  { "id": 40, "name": "Ferulic Acid Radiance Serum", "price": 679, "type": "serum", "image": "" },
+  { "id": 41, "name": "C + Ferulic Skin Repair Serum", "price": 629, "type": "serum", "image": "" },
+
+  { "id": 45, "name": "Hydra Gel Moisturizer", "price": 499, "type": "moisturizer", "image": ""},
+  { "id": 46, "name": "Ceramide Barrier Repair Gel", "price": 549, "type": "moisturizer", "image": "" },
+  { "id": 47, "name": "Niacinamide Oil-Free Moisturizer", "price": 479, "type": "moisturizer", "image": "" },
+  { "id": 48, "name": "Daily Hydration Gel Cream", "price": 529, "type": "moisturizer", "image": "" },
+
+  { "id": 52, "name": "SPF 50 Daily Sun Shield", "price": 499, "type": "sunscreen", "image": "" },
+  { "id": 53, "name": "Broad Spectrum UV Protect", "price": 549, "type": "sunscreen", "image": "" },
+  { "id": 54, "name": "No White Cast Invisible Sunscreen", "price": 479, "type": "sunscreen", "image": "" },
+  { "id": 55, "name": "Ultra Light Gel Sunscreen SPF 50", "price": 529, "type": "sunscreen", "image": "" },
+
+  { "id": 59, "name": "Retinol 0.3% Night Repair Serum", "price": 699, "type": "serum" },
+  { "id": 60, "name": "Anti-Aging Retinol Renewal Serum", "price": 749, "type": "serum" },
+  { "id": 61, "name": "Overnight Skin Smooth Retinol", "price": 679, "type": "serum" },
+  { "id": 62, "name": "Retinol Glow Night Elixir", "price": 729, "type": "serum" },
+
+  { "id": 66, "name": "Hydrating Overnight Mask", "price": 599, "type": "mask", "image": "" },
+  { "id": 67, "name": "Overnight Recovery Glow Mask", "price": 649, "type": "mask", "image": "" },
+  { "id": 68, "name": "Deep Hydration Sleep Mask", "price": 579, "type": "mask", "image": "" },
+  { "id": 69, "name": "Skin Repair Night Mask", "price": 629, "type": "mask", "image": "" },
+
+  { "id": 80, "name": "Rosehip Glow Face Oil", "price": 699, "type": "face oil", "image": "" },
+  { "id": 81, "name": "Squalane Hydration Oil", "price": 749, "type": "face oil", "image": "" },
+  { "id": 82, "name": "Nourishing Rose Face Oil", "price": 679, "type": "face oil", "image": "" },
+  { "id": 83, "name": "Deep Repair Facial Oil", "price": 729, "type": "face oil", "image": "" }
+  ],
+
+  "makeupkits": [
+  { "id": 87, "name": "Party Glam Makeup Kit", "price": 1499, "type": "combo", "image": "" },
+  { "id": 88, "name": "Ultimate Glam Beauty Kit", "price": 1599, "type": "combo", "image": "" },
+  { "id": 89, "name": "Shimmer Glow Party Set", "price": 1399, "type": "combo", "image": "" },
+  { "id": 90, "name": "All-in-One Glam Kit", "price": 1699, "type": "combo", "image": "" },
+
+  { "id": 94, "name": "Bridal Glow Makeup Kit", "price": 2499, "type": "combo", "image": "" },
+  { "id": 95, "name": "Full Face Bridal Pro Kit", "price": 2699, "type": "combo", "image": "" },
+  { "id": 96, "name": "Luxury Bridal Glam Kit", "price": 2899, "type": "combo", "image": "" },
+  { "id": 97, "name": "Ultimate Wedding Makeup Kit", "price": 2999, "type": "combo", "image": "" },
+
+  { "id": 101, "name": "Travel Touchup Mini Kit", "price": 999, "type": "combo", "image": "" },
+  { "id": 102, "name": "On-the-Go Beauty Kit", "price": 1099, "type": "combo", "image": "" },
+  { "id": 103, "name": "Mini Glam Travel Kit", "price": 949, "type": "combo", "image": "" },
+  { "id": 104, "name": "Pocket Makeup Essentials Kit", "price": 1199, "type": "combo", "image": "" },
+
+  { "id": 108, "name": "Pro Artist Makeup Kit", "price": 3499, "type": "combo", "image": "" },
+  { "id": 109, "name": "20+ Items Professional Kit", "price": 3699, "type": "combo", "image": "" },
+  { "id": 110, "name": "Makeup Artist Master Kit", "price": 3899, "type": "combo", "image": "" },
+  { "id": 111, "name": "Ultimate Pro Beauty Kit", "price": 4099, "type": "combo", "image": "" },
+
+  { "id": 115, "name": "Natural Glow Beauty Kit", "price": 1599, "type": "combo", "image": "" },
+  { "id": 116, "name": "Clean Beauty Essentials Kit", "price": 1699, "type": "combo", "image": "" },
+  { "id": 117, "name": "Fresh Skin Glow Kit", "price": 1499, "type": "combo", "image": "" },
+  { "id": 118, "name": "Pure Radiance Makeup Kit", "price": 1799, "type": "combo", "image": "" },
+
+  { "id": 122, "name": "Festival Glam Makeup Kit", "price": 1799, "type": "combo", "image": "" },
+  { "id": 123, "name": "Bold Beauty Festival Kit", "price": 1899, "type": "combo", "image": "" },
+  { "id": 124, "name": "Vibrant Eyes & Lips Kit", "price": 1699, "type": "combo", "image": "" },
+  { "id": 125, "name": "Festive Glow Makeup Set", "price": 1999, "type": "combo", "image": "" },
+
+  { "id": 129, "name": "Luxury Full Coverage Kit", "price": 2299, "type": "combo", "image": "" },
+  { "id": 130, "name": "Premium Glam Coverage Kit", "price": 2399, "type": "combo", "image": "" },
+  { "id": 131, "name": "Elite Full Face Luxury Kit", "price": 2599, "type": "combo", "image": "" },
+  { "id": 132, "name": "High Coverage Beauty Kit", "price": 2499, "type": "combo", "image": "" }
+
+  ],
+  "perfumes": [
+     { "id": 136, "name": "Oud Majesty Perfume", "price": 1999, "type": "perfume", "image": "" },
+  { "id": 137, "name": "Royal Oud Essence", "price": 2199, "type": "perfume", "image": "" },
+  { "id": 138, "name": "Midnight Oud Elixir", "price": 1899, "type": "perfume", "image": "" },
+  { "id": 139, "name": "Oriental Oud Luxury", "price": 2299, "type": "perfume", "image": "" },
+
+    { "id": 143, "name": "Citrus Breeze Perfume", "price": 1499, "type": "perfume", "image": "" },
+  { "id": 144, "name": "Fresh Citrus Splash", "price": 1599, "type": "perfume", "image": "" },
+  { "id": 145, "name": "Zesty Lemon Glow", "price": 1399, "type": "perfume", "image": "" },
+  { "id": 146, "name": "Citrus Daylight Essence", "price": 1699, "type": "perfume", "image": "" },
+
+   { "id": 150, "name": "Forest Whisper Perfume", "price": 1699, "type": "perfume", "image": "" },
+  { "id": 151, "name": "Woody Fresh Essence", "price": 1799, "type": "perfume", "image": "" },
+  { "id": 152, "name": "Green Forest Elixir", "price": 1599, "type": "perfume", "image": "" },
+  { "id": 153, "name": "Nature Wood Signature", "price": 1899, "type": "perfume", "image": "" },
+
+    { "id": 157, "name": "Amber Noir Perfume", "price": 1899, "type": "perfume", "image": "" },
+  { "id": 158, "name": "Warm Amber Essence", "price": 1999, "type": "perfume", "image": "" },
+  { "id": 159, "name": "Sensual Amber Elixir", "price": 1799, "type": "perfume", "image": "" },
+  { "id": 160, "name": "Noir Amber Signature", "price": 2099, "type": "perfume", "image": "" },
+
+    { "id": 164, "name": "Vanilla Bliss Perfume", "price": 1599, "type": "perfume", "image": "" },
+  { "id": 165, "name": "Sweet Vanilla Essence", "price": 1699, "type": "perfume", "image": "" },
+  { "id": 166, "name": "Cozy Vanilla Elixir", "price": 1499, "type": "perfume", "image": "" },
+  { "id": 167, "name": "Gourmand Vanilla Glow", "price": 1799, "type": "perfume", "image": "" },
+
+  { "id": 171, "name": "Green Tea Fresh Perfume", "price": 1399, "type": "perfume", "image": "" },
+  { "id": 172, "name": "Clean Green Tea Essence", "price": 1499, "type": "perfume", "image": "" },
+  { "id": 173, "name": "Daily Fresh Green Tea", "price": 1299, "type": "perfume", "image": "" },
+  { "id": 174, "name": "Pure Green Tea Glow", "price": 1599, "type": "perfume", "image": "" },
+
+  { "id": 178, "name": "Spicy Ember Perfume", "price": 1799, "type": "perfume", "image": "" },
+  { "id": 179, "name": "Warm Spice Essence", "price": 1899, "type": "perfume", "image": "" },
+  { "id": 180, "name": "Ember Spice Elixir", "price": 1699, "type": "perfume", "image": "" },
+  { "id": 181, "name": "Evening Spice Glow", "price": 1999, "type": "perfume", "image": "" }
+
+  ]
+
+
+}
