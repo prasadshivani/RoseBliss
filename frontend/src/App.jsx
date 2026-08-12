@@ -3,11 +3,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import React, { useState, useEffect } from "react";
 import Navbar from "./Navbar";
-import Collection from "./pages/collection";
+import Collection from "./pages/Collection";
 import { Routes, Route } from "react-router-dom";
 import About from "./pages/about";
 import Contact from "./pages/Contact";
-import Home from "./pages/home";
+import Home from "./pages/Home";
 import Lipsticks from "./pages/Lipsticks";
 import Skincare from "./pages/Skincare";
 import Makeupkits from "./pages/Makeupkits";
@@ -19,6 +19,13 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import Details from "./pages/Details";
 import Wishlist from "./pages/Wishlist";
 import MyOrders from "./pages/MyOrders";
+import AdminProtectedRoute from "./pages/AdminProtectedRoute";
+import AdminDashboard from "./admin/AdminDashboard";
+import AddProduct from "./admin/AddProduct";
+import ProductList from "./admin/ProductList";
+import EditProduct from "./admin/EditProduct";
+import OrderList from "./admin/OrderList";
+import AdminCoupons from "./pages/AdminCoupon";
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -30,7 +37,7 @@ function App() {
       if (!user) return;
 
       try {
-        const res = await api.get(`/api/cart/${user._id}`);
+        const res = await api.get("/api/cart");
         const formattedCart = res.data.cart.map((item) => ({
           ...item.productId,
           quantity: item.quantity,
@@ -49,7 +56,7 @@ function App() {
       if (!user) return;
 
       try {
-        const res = await api.get(`/api/wishlist/${user._id}`);
+        const res = await api.get("/api/wishlist");
         setWishlist(res.data.wishlist);
       } catch (error) {
         console.log("WISHLIST FETCH ERROR =>", error);
@@ -59,35 +66,43 @@ function App() {
   }, []);
 
   const addToCart = async (product) => {
+    console.log("ADD TO CART CALLED =>", product);
+
     const user = JSON.parse(localStorage.getItem("user"));
+
     if (!user) {
       toast.error("Please login first");
       return;
     }
 
     try {
-      await api.post("/api/cart/add", {
-        userId: user._id,
+      const res = await api.post("/api/cart/add", {
         productId: product._id,
       });
+
+      console.log("ADD TO CART RESPONSE =>", res.data);
 
       const existingProduct = cart.find(
         (item) => item._id?.toString() === product._id?.toString(),
       );
 
       if (existingProduct) {
-        setCart(
-          cart.map((item) =>
+        setCart((prev) =>
+          prev.map((item) =>
             item._id?.toString() === product._id?.toString()
               ? { ...item, quantity: item.quantity + 1 }
               : item,
           ),
         );
       } else {
-        setCart([...cart, { ...product, quantity: 1 }]);
+        setCart((prev) => [...prev, { ...product, quantity: 1 }]);
       }
+
+      toast.success("Added to Cart 🛒");
     } catch (error) {
-      console.log("ADD TO CART ERROR =>", error);
+      console.log("FULL ERROR =>", error);
+
+      toast.error(error.response?.data?.message || "Could not add to cart");
     }
   };
 
@@ -99,18 +114,21 @@ function App() {
     }
 
     const alreadyInWishlist = wishlist.find(
-      (item) => item.productId?._id?.toString() === product._id?.toString()
+      (item) => item.productId?._id?.toString() === product._id?.toString(),
     );
 
     if (alreadyInWishlist) {
       try {
-        await api.delete(`/api/wishlist/remove`, {
-          data: { userId: user._id, productId: product._id },
+        await api.delete("/api/wishlist/remove", {
+          data: {
+            productId: product._id,
+          },
         });
         setWishlist(
           wishlist.filter(
-            (item) => item.productId?._id?.toString() !== product._id?.toString()
-          )
+            (item) =>
+              item.productId?._id?.toString() !== product._id?.toString(),
+          ),
         );
         toast.info("Removed from wishlist 💔");
       } catch (error) {
@@ -119,7 +137,6 @@ function App() {
     } else {
       try {
         const res = await api.post("/api/wishlist/add", {
-          userId: user._id,
           productId: product._id,
         });
         setWishlist([...wishlist, res.data.wishlist]);
@@ -151,7 +168,12 @@ function App() {
           path="/lipsticks"
           element={
             <ProtectedRoute>
-              <Lipsticks addToCart={addToCart} cart={cart} wishlist={wishlist} toggleWishlist={toggleWishlist} />
+              <Lipsticks
+                addToCart={addToCart}
+                cart={cart}
+                wishlist={wishlist}
+                toggleWishlist={toggleWishlist}
+              />
             </ProtectedRoute>
           }
         />
@@ -183,7 +205,12 @@ function App() {
           path="/skincare"
           element={
             <ProtectedRoute>
-              <Skincare addToCart={addToCart} cart={cart} wishlist={wishlist} toggleWishlist={toggleWishlist} />
+              <Skincare
+                addToCart={addToCart}
+                cart={cart}
+                wishlist={wishlist}
+                toggleWishlist={toggleWishlist}
+              />
             </ProtectedRoute>
           }
         />
@@ -191,7 +218,12 @@ function App() {
           path="/makeupkits"
           element={
             <ProtectedRoute>
-              <Makeupkits addToCart={addToCart} cart={cart} wishlist={wishlist} toggleWishlist={toggleWishlist} />
+              <Makeupkits
+                addToCart={addToCart}
+                cart={cart}
+                wishlist={wishlist}
+                toggleWishlist={toggleWishlist}
+              />
             </ProtectedRoute>
           }
         />
@@ -199,7 +231,12 @@ function App() {
           path="/perfumes"
           element={
             <ProtectedRoute>
-              <Perfumes addToCart={addToCart} cart={cart} wishlist={wishlist} toggleWishlist={toggleWishlist} />
+              <Perfumes
+                addToCart={addToCart}
+                cart={cart}
+                wishlist={wishlist}
+                toggleWishlist={toggleWishlist}
+              />
             </ProtectedRoute>
           }
         />
@@ -215,10 +252,55 @@ function App() {
           path="/wishlist"
           element={
             <ProtectedRoute>
-              <Wishlist wishlist={wishlist} addToCart={addToCart} toggleWishlist={toggleWishlist} />
+              <Wishlist
+                wishlist={wishlist}
+                addToCart={addToCart}
+                toggleWishlist={toggleWishlist}
+              />
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute>
+              <AdminDashboard />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/add-product"
+          element={
+            <AdminProtectedRoute>
+              <AddProduct />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/products"
+          element={
+            <AdminProtectedRoute>
+              <ProductList />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/edit-product/:id"
+          element={
+            <AdminProtectedRoute>
+              <EditProduct />
+            </AdminProtectedRoute>
+          }
+        />
+        <Route
+  path="/admin/orders"
+  element={
+    <AdminProtectedRoute>
+      <OrderList/>
+    </AdminProtectedRoute>
+  }
+/>
+        <Route path="/admin/coupons" element={<AdminCoupons/>} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
       </Routes>

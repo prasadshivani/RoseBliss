@@ -25,16 +25,25 @@ const orderSchema = new mongoose.Schema(
       city: String,
       pincode: String,
     },
-    paymentId: String,
-    paymentStatus: {
-      type: String,
-      default: "SUCCESS",
-    },
-    orderStatus: {
-      type: String,
-      enum: ["Placed", "Shipped", "Delivered", "Cancelled"],
-      default: "Placed",
-    },
+   paymentId: String,
+
+paymentMethod: {
+  type: String,
+  enum: ["Razorpay", "COD"],
+  default: "COD",
+},
+
+paymentStatus: {
+  type: String,
+  enum: ["Pending", "Paid", "Failed"],
+  default: "Pending",
+},
+
+orderStatus: {
+  type: String,
+  enum: ["Placed", "Shipped", "Delivered", "Cancelled"],
+  default: "Placed",
+},
   },
   { timestamps: true }
 );

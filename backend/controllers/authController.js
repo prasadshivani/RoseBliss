@@ -70,6 +70,7 @@ const postLogin = async (req, res) => {
         id: existingUser._id,
         name: existingUser.name,
         email: existingUser.email,
+        role: existingUser.role,
       },
       process.env.JWT_SECRET,
       {
@@ -84,6 +85,7 @@ const postLogin = async (req, res) => {
         _id: existingUser._id,
         name: existingUser.name,
         email: existingUser.email,
+        role: existingUser.role,
       },
     });
   } catch (error) {

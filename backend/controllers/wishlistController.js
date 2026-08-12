@@ -3,15 +3,17 @@ const Wishlist = require("../models/Wishlist");
 // Add Product To Wishlist
 const addWishlist = async (req, res) => {
   try {
-    const { userId, productId } = req.body;
+    const { productId } = req.body;
+    const userId = req.user.id;
 
-    if (!userId || !productId) {
+    if (!productId) {
       return res.status(400).json({
         success: false,
-        message: "userId aur productId dono zaroori hain",
+        message: "productId zaroori hai",
       });
     }
 
+    // Ownership check: matches both req.user.id and productId
     const exists = await Wishlist.findOne({ userId, productId });
 
     if (exists) {
@@ -41,11 +43,11 @@ const addWishlist = async (req, res) => {
 // Get Wishlist
 const getWishlist = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.id;
 
     let wishlist = await Wishlist.find({ userId }).populate("productId");
 
-    // Jinke productId null hain (product delete ho chuka hai), unhe wishlist se bhi hata do
+    // Orphan cleanup
     const orphanIds = wishlist
       .filter((item) => !item.productId)
       .map((item) => item._id);
@@ -73,9 +75,18 @@ const getWishlist = async (req, res) => {
 // Remove Wishlist
 const removeWishlist = async (req, res) => {
   try {
-    const { userId, productId } = req.body;
+    const { productId } = req.body;
+    const userId = req.user.id;
 
-    await Wishlist.findOneAndDelete({ userId, productId });
+    if (!productId) {
+      return res.status(400).json({ success: false, message: "productId zaroori hai" });
+    }
+
+    // Ownership verification by matching both productId and req.user.id
+    const deleted = await Wishlist.findOneAndDelete({ userId, productId });
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: "Item not found in your wishlist" });
+    }
 
     res.json({ success: true, message: "Removed from wishlist" });
   } catch (error) {

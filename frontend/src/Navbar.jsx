@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import api from "./api/axios";
 
 const Navbar = ({ cart, wishlist }) => {
   const token = localStorage.getItem("token");
@@ -34,11 +35,8 @@ const Navbar = ({ cart, wishlist }) => {
     const timer = setTimeout(async () => {
       setLoading(true);
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/products/search?q=${query}`,
-        );
-        const data = await res.json();
-        setResults(data);
+        const res = await api.get(`/api/products/search?q=${query}`);
+        setResults(res.data);
         setShowDropdown(true);
       } catch (err) {
         console.error("Search error:", err);

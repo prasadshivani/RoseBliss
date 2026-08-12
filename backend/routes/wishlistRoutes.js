@@ -1,4 +1,7 @@
 const express = require("express");
+const router = express.Router();
+
+const verifyToken = require("../middleware/authMiddleware");
 
 const {
   addWishlist,
@@ -6,12 +9,32 @@ const {
   removeWishlist,
 } = require("../controllers/wishlistController");
 
-const router = express.Router();
+const {
+  validateWishlistAdd,
+  validateWishlistRemove,
+} = require("../middleware/validationMiddleware");
 
-router.post("/add", addWishlist);
+// Add to Wishlist
+router.post(
+  "/add",
+  verifyToken,
+  validateWishlistAdd,
+  addWishlist
+);
 
-router.get("/:userId", getWishlist);
+// Get Wishlist
+router.get(
+  "/",
+  verifyToken,
+  getWishlist
+);
 
-router.delete("/remove", removeWishlist);
+// Remove Wishlist
+router.delete(
+  "/remove",
+  verifyToken,
+  validateWishlistRemove,
+  removeWishlist
+);
 
 module.exports = router;

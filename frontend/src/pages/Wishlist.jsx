@@ -62,29 +62,23 @@ const Wishlist = ({ wishlist, toggleWishlist, addToCart }) => {
                     </p>
 
                     <div className="d-grid gap-2">
-                      <button
-                        className="btn btn-success"
-                        onClick={() => {
-                          addToCart(product);
-                          toast.success(
-                            `${product.name} added to cart 🛒`
-                          );
-                        }}
-                      >
-                        🛒 Add To Cart
-                      </button>
+                     <button
+  className="btn btn-success"
+  onClick={() => {
+    addToCart(product);
+  }}
+>
+  🛒 Add To Cart
+</button>
 
-                      <button
-                        className="btn btn-outline-danger"
-                        onClick={() => {
-                          toggleWishlist(product);
-                          toast.success(
-                            `${product.name} removed from wishlist`
-                          );
-                        }}
-                      >
-                        ❌ Remove
-                      </button>
+<button
+  className="btn btn-outline-danger"
+  onClick={() => {
+    toggleWishlist(product);
+  }}
+>
+  ❌ Remove
+</button>
                     </div>
                   </div>
                 </div>

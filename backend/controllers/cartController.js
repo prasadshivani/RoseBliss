@@ -3,15 +3,17 @@ const Cart = require("../models/Cart");
 // Add to Cart (ya quantity badhao agar already hai)
 const addToCart = async (req, res) => {
   try {
-    const { userId, productId } = req.body;
+    const { productId } = req.body;
+    const userId = req.user.id;
 
-    if (!userId || !productId) {
+    if (!productId) {
       return res.status(400).json({
         success: false,
-        message: "userId aur productId dono zaroori hain",
+        message: "productId zaroori hai",
       });
     }
 
+    // Ownership/existence check matching both req.user.id and productId
     let item = await Cart.findOne({ userId, productId });
 
     if (item) {
@@ -33,11 +35,11 @@ const addToCart = async (req, res) => {
 // Get Cart
 const getCart = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.id;
 
     let cart = await Cart.find({ userId }).populate("productId");
 
-    // Orphan cleanup (jaise wishlist mein kiya tha)
+    // Orphan cleanup
     const orphanIds = cart.filter((i) => !i.productId).map((i) => i._id);
     if (orphanIds.length > 0) {
       await Cart.deleteMany({ _id: { $in: orphanIds } });
@@ -54,11 +56,17 @@ const getCart = async (req, res) => {
 // Update Quantity
 const updateQuantity = async (req, res) => {
   try {
-    const { userId, productId, action } = req.body; // action: "increase" | "decrease"
+    const { productId, action } = req.body; // action: "increase" | "decrease"
+    const userId = req.user.id;
 
+    if (!productId) {
+      return res.status(400).json({ success: false, message: "productId zaroori hai" });
+    }
+
+    // Ownership check: must match both productId and req.user.id
     const item = await Cart.findOne({ userId, productId });
     if (!item) {
-      return res.status(404).json({ success: false, message: "Item not found" });
+      return res.status(404).json({ success: false, message: "Item not found in your cart" });
     }
 
     if (action === "increase") item.quantity += 1;
@@ -75,8 +83,19 @@ const updateQuantity = async (req, res) => {
 // Remove from Cart
 const removeFromCart = async (req, res) => {
   try {
-    const { userId, productId } = req.body;
-    await Cart.findOneAndDelete({ userId, productId });
+    const { productId } = req.body;
+    const userId = req.user.id;
+
+    if (!productId) {
+      return res.status(400).json({ success: false, message: "productId zaroori hai" });
+    }
+
+    // Ownership verification by matching both productId and req.user.id
+    const deletedItem = await Cart.findOneAndDelete({ userId, productId });
+    if (!deletedItem) {
+      return res.status(404).json({ success: false, message: "Item not found in your cart" });
+    }
+
     res.status(200).json({ success: true, message: "Removed from cart" });
   } catch (error) {
     console.error("REMOVE FROM CART ERROR =>", error);
@@ -84,10 +103,10 @@ const removeFromCart = async (req, res) => {
   }
 };
 
-// Clear Cart (order place hone ke baad)
+// Clear Cart
 const clearCart = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const userId = req.user.id;
     await Cart.deleteMany({ userId });
     res.status(200).json({ success: true, message: "Cart cleared" });
   } catch (error) {

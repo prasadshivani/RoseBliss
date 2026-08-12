@@ -51,7 +51,19 @@ const MyOrders = () => {
           <div key={order._id} className="card mb-3 p-3 shadow-sm rounded-4">
             <div className="d-flex justify-content-between align-items-center">
               <strong>Order #{order._id.slice(-6).toUpperCase()}</strong>
-              <span className="badge bg-success">{order.orderStatus}</span>
+              <span
+  className={`badge ${
+    order.orderStatus === "Delivered"
+      ? "bg-success"
+      : order.orderStatus === "Shipped"
+      ? "bg-primary"
+      : order.orderStatus === "Cancelled"
+      ? "bg-danger"
+      : "bg-warning text-dark"
+  }`}
+>
+  {order.orderStatus}
+</span>
             </div>
             <small className="text-muted">
               {new Date(order.createdAt).toLocaleString()}

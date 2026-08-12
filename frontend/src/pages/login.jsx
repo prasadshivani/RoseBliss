@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -30,12 +31,12 @@ const Login = () => {
 
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      alert(res.data.message || "Login Successful ✅");
+      toast.success(res.data.message || "Login Successful ✅");
 
       navigate("/");
     } catch (err) {
       console.log(err);
-      alert(err.response?.data?.message || "Login Failed ❌");
+      toast.error(err.response?.data?.message || "Login Failed ❌");
     } finally {
       setLoading(false);
     }
@@ -109,7 +110,7 @@ const Login = () => {
         <p className="text-center mt-4 mb-0">
           Don’t have an account?{" "}
           <span
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/register")}
             style={{
               color: "#ec4899",
               cursor: "pointer",
