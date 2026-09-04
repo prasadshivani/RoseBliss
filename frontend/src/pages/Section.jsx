@@ -55,7 +55,7 @@ function Section() {
                 </p>
                 <div className="d-flex gap-3 flex-wrap">
                   <NavLink
-                    to="/collections"
+                    to="/collection"
                     className="btn btn-danger btn-lg px-5 py-3 fw-bold rounded-pill shadow-sm nav-hover"
                   >
                     Shop Collections

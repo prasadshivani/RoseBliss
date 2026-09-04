@@ -2,10 +2,21 @@ import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import api from "./api/axios";
+import { useClerk } from "@clerk/clerk-react";
 
 const Navbar = ({ cart, wishlist }) => {
   const token = localStorage.getItem("token");
-  const navigate = useNavigate();
+
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("user")) || null;
+    } catch {
+      return null;
+    }
+  });
+
+  const isAdmin = currentUser?.role === "admin";
+  const { signOut } = useClerk();
 
   const [collectionsOpen, setCollectionsOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -27,6 +38,22 @@ const Navbar = ({ cart, wishlist }) => {
   }, []);
 
   useEffect(() => {
+    const updateUser = () => {
+      try {
+        setCurrentUser(JSON.parse(localStorage.getItem("user")) || null);
+      } catch {
+        setCurrentUser(null);
+      }
+    };
+
+    window.addEventListener("authChanged", updateUser);
+
+    return () => {
+      window.removeEventListener("authChanged", updateUser);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!query.trim()) {
       setResults([]);
       setShowDropdown(false);
@@ -36,7 +63,7 @@ const Navbar = ({ cart, wishlist }) => {
       setLoading(true);
       try {
         const res = await api.get(`/api/products/search?q=${query}`);
-        setResults(res.data);
+        setResults(Array.isArray(res.data.products) ? res.data.products : []);
         setShowDropdown(true);
       } catch (err) {
         console.error("Search error:", err);
@@ -113,6 +140,7 @@ const Navbar = ({ cart, wishlist }) => {
                   </div>
                 )}
                 {!loading &&
+                  Array.isArray(results) &&
                   results.map((product) => (
                     <div
                       key={product._id}
@@ -202,6 +230,7 @@ const Navbar = ({ cart, wishlist }) => {
                     </div>
                   )}
                   {!loading &&
+                    Array.isArray(results) &&
                     results.map((product) => (
                       <div
                         key={product._id}
@@ -329,14 +358,15 @@ const Navbar = ({ cart, wishlist }) => {
                   to="/cart"
                   onClick={closeMenus}
                 >
-                 🛒 Cart
+                  🛒 Cart
                 </NavLink>
               </li>
 
-              <Link 
-              className="nav-link mx-2 px-4 py-2 rounded-pill text-dark fw-medium nav-hover"
-              to="/my-orders" 
-              onClick={closeMenus}>
+              <Link
+                className="nav-link mx-2 px-4 py-2 rounded-pill text-dark fw-medium nav-hover"
+                to="/my-orders"
+                onClick={closeMenus}
+              >
                 📦 My Orders
               </Link>
 
@@ -345,16 +375,50 @@ const Navbar = ({ cart, wishlist }) => {
               </Link>
 
               {token ? (
-                <li className="nav-item">
+                <li className="nav-item position-relative" ref={dropdownRef}>
                   <button
-                    className="nav-link mx-2 px-2 py-2 rounded-pill text-dark fw-medium nav-hover border-0 bg-transparent"
-                    onClick={() => {
-                      localStorage.removeItem("token");
-                      window.location.reload();
-                    }}
+                    className="nav-link mx-2 px-3 py-2 rounded-pill text-dark fw-medium nav-hover border-0 bg-transparent"
+                    onClick={() => setCollectionsOpen(!collectionsOpen)}
                   >
-                    Logout
+                    👤 {currentUser?.name || "Profile"} ▾
                   </button>
+
+                  <ul
+                    className={`dropdown-menu-custom ${
+                      collectionsOpen ? "dropdown-open" : ""
+                    }`}
+                    style={{ right: 0, left: "auto", minWidth: "200px" }}
+                  >
+                    {isAdmin && (
+                      <li>
+                        <NavLink
+                          className="dropdown-item-custom"
+                          to="/admin"
+                          onClick={closeMenus}
+                        >
+                          📊 Admin Dashboard
+                        </NavLink>
+                      </li>
+                    )}
+
+                    <li>
+                      <button
+                        className="dropdown-item-custom border-0 bg-transparent"
+                        onClick={async () => {
+                          localStorage.removeItem("token");
+                          localStorage.removeItem("user");
+
+                          window.dispatchEvent(new Event("authChanged"));
+
+                          await signOut();
+
+                          navigate("/");
+                        }}
+                      >
+                        🚪 Logout
+                      </button>
+                    </li>
+                  </ul>
                 </li>
               ) : (
                 <li className="nav-item">

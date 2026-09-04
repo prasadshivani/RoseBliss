@@ -38,12 +38,11 @@ const AdminDashboard = () => {
     }
   };
   const handleLogout = () => {
-    localStorage.removeItem("token");
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
 
-    localStorage.removeItem("user");
-
-    navigate("/login");
-  };
+  navigate("/admin-login");
+};
   const exportOrders = () => {
     const orders = dashboard.recentOrders;
 

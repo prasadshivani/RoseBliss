@@ -26,6 +26,8 @@ import ProductList from "./admin/ProductList";
 import EditProduct from "./admin/EditProduct";
 import OrderList from "./admin/OrderList";
 import AdminCoupons from "./pages/AdminCoupon";
+import AdminLogin from "./pages/AdminLogin";
+// import SSOCallback from "./pages/SSOCallback";
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -261,13 +263,13 @@ function App() {
           }
         />
         <Route
-          path="/admin"
-          element={
-            <AdminProtectedRoute>
-              <AdminDashboard />
-            </AdminProtectedRoute>
-          }
-        />
+  path="/admin"
+  element={
+    <AdminProtectedRoute>
+      <AdminDashboard />
+    </AdminProtectedRoute>
+  }
+/>
         <Route
           path="/admin/add-product"
           element={
@@ -303,6 +305,8 @@ function App() {
         <Route path="/admin/coupons" element={<AdminCoupons/>} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/admin-login/*" element={<AdminLogin />} />
+        {/* <Route path="/sso-callback" element={<SSOCallback />} /> */}
       </Routes>
     </>
   );

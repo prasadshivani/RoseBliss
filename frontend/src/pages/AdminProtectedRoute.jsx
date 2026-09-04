@@ -2,16 +2,38 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 
 const AdminProtectedRoute = ({ children }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
+  const userData = localStorage.getItem("user");
 
-  if (!user) {
-    return <Navigate to="/login" replace />;
+  let user = null;
+
+  try {
+    user = userData ? JSON.parse(userData) : null;
+  } catch (error) {
+    console.error("Invalid user data:", error);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   }
 
+  console.log("ADMIN PROTECTED ROUTE =>", {
+    token,
+    user,
+  });
+
+  // Login hi nahi hai
+  if (!token || !user) {
+    return <Navigate to="/admin-login" replace />;
+  }
+
+  // Admin nahi hai
   if (user.role !== "admin") {
-    return <Navigate to="/" replace />;
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    return <Navigate to="/admin-login" replace />;
   }
 
+  // Admin hai
   return children;
 };
 

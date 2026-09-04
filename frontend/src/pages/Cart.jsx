@@ -75,6 +75,18 @@ const [finalTotal, setFinalTotal] = useState(0);
   setFinalTotal(totalPrice - discount);
 }, [totalPrice, discount]);
 
+useEffect(() => {
+  const script = document.createElement("script");
+  script.src = "https://checkout.razorpay.com/v1/checkout.js";
+  script.async = true;
+
+  document.body.appendChild(script);
+
+  return () => {
+    document.body.removeChild(script);
+  };
+}, []);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -122,43 +134,175 @@ const handlePayment = async () => {
     return;
   }
 
+  if (!window.Razorpay) {
+    toast.error("Razorpay is still loading. Please try again.");
+    return;
+  }
+
   setIsProcessing(true);
 
-  const payload = {
-    items: cart.map((item) => ({
-      productId: item._id,
-      name: item.name,
-      image: item.image,
-      price: item.price,
-      quantity: item.quantity,
-    })),
-    total: finalTotal,
-coupon: couponCode,
-discount,
-    shippingDetails: formData,
-    paymentId: "TEST_PAYMENT_SUCCESS",
-  };
-
   try {
-  const res = await api.post("/api/orders/place", payload);
+    // STEP 1: Create Razorpay order
+    const orderResponse = await api.post(
+      "/api/payment/create-order",
+      {
+        amount: finalTotal || totalPrice,
+      }
+    );
 
-  console.log("ORDER SUCCESS =>", res.data);
+    console.log("RAZORPAY ORDER =>", orderResponse.data);
 
-  await api.post("/api/cart/clear");
+    const {
+      orderId,
+      amount,
+      currency,
+      keyId,
+    } = orderResponse.data;
 
-  setCart([]);
-  setOrderSuccess(true);
+    // STEP 2: Open Razorpay popup
+    const options = {
+      key: keyId,
+      amount: amount,
+      currency: currency,
 
-  toast.success("Order Placed Successfully 🎉");
-} catch (error) {
-  console.log("STATUS =>", error.response?.status);
-  console.log("DATA =>", error.response?.data);
-  console.log("FULL ERROR =>", error);
+      name: "RoseBliss",
+      description: "RoseBliss Order",
 
-  toast.error(error.response?.data?.message || "Order Failed");
-} finally {
-  setIsProcessing(false);
-}
+      order_id: orderId,
+
+      prefill: {
+        name: formData.name,
+        email: formData.email,
+        contact: formData.phone,
+      },
+
+      notes: {
+        address: formData.address,
+        city: formData.city,
+        pincode: formData.pincode,
+      },
+
+      theme: {
+        color: "#ec4899",
+      },
+
+      // STEP 3: Payment successful
+      handler: async function (response) {
+        console.log(
+          "RAZORPAY PAYMENT RESPONSE =>",
+          response
+        );
+
+        try {
+          // STEP 4: Verify payment
+          const verifyResponse = await api.post(
+            "/api/payment/verify",
+            {
+              razorpay_order_id:
+                response.razorpay_order_id,
+
+              razorpay_payment_id:
+                response.razorpay_payment_id,
+
+              razorpay_signature:
+                response.razorpay_signature,
+
+              userId: user._id,
+
+              items: cart.map((item) => ({
+                productId: item._id,
+                name: item.name,
+                image: item.image,
+                price: item.price,
+                quantity: item.quantity,
+              })),
+
+              total: finalTotal || totalPrice,
+
+              shippingDetails: formData,
+            }
+          );
+
+          console.log(
+            "VERIFY RESPONSE =>",
+            verifyResponse.data
+          );
+
+          if (verifyResponse.data.success) {
+            setCart([]);
+            setOrderSuccess(true);
+
+            toast.success(
+              "Payment Successful & Order Placed 🎉"
+            );
+          }
+        } catch (error) {
+          console.error(
+            "PAYMENT VERIFY ERROR =>",
+            error
+          );
+
+          console.error(
+            "SERVER RESPONSE =>",
+            error.response?.data
+          );
+
+          toast.error(
+            error.response?.data?.message ||
+              "Payment verification failed"
+          );
+        } finally {
+          setIsProcessing(false);
+        }
+      },
+
+      // User closes Razorpay popup
+      modal: {
+        ondismiss: function () {
+          setIsProcessing(false);
+          toast.info("Payment cancelled");
+        },
+      },
+    };
+
+    // STEP 5: Create Razorpay instance
+    const razorpay = new window.Razorpay(options);
+
+    // Payment failed
+    razorpay.on("payment.failed", function (response) {
+      console.error(
+        "PAYMENT FAILED =>",
+        response.error
+      );
+
+      setIsProcessing(false);
+
+      toast.error(
+        response.error?.description ||
+          "Payment failed"
+      );
+    });
+
+    // STEP 6: Open popup
+    razorpay.open();
+  } catch (error) {
+    console.error(
+      "RAZORPAY ORDER ERROR =>",
+      error
+    );
+
+    console.error(
+      "SERVER RESPONSE =>",
+      error.response?.data
+    );
+
+    toast.error(
+      error.response?.data?.message ||
+        "Unable to start payment"
+    );
+
+    setIsProcessing(false);
+  }
 };
 
 

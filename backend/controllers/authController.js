@@ -85,6 +85,7 @@ const postLogin = async (req, res) => {
         _id: existingUser._id,
         name: existingUser.name,
         email: existingUser.email,
+        
         role: existingUser.role,
       },
     });
@@ -96,7 +97,92 @@ const postLogin = async (req, res) => {
   }
 };
 
+const clerkAdminLogin = async (req, res) => {
+  try {
+    const { email, name } = req.body;
+
+    console.log("========== CLERK ADMIN LOGIN ==========");
+    console.log("EMAIL RECEIVED FROM CLERK =>", email);
+    console.log("NAME RECEIVED FROM CLERK =>", name);
+
+    if (!email) {
+      return res.status(400).json({
+        message: "Email is required",
+      });
+    }
+
+    // Email ko clean + lowercase karo
+    const normalizedEmail = email.trim().toLowerCase();
+
+    console.log(
+      "NORMALIZED EMAIL =>",
+      normalizedEmail
+    );
+
+    // MongoDB me normalized email se user find karo
+    const existingUser = await User.findOne({
+      email: normalizedEmail,
+    });
+
+    console.log(
+      "USER FOUND IN MONGODB =>",
+      existingUser
+    );
+
+    if (!existingUser) {
+      return res.status(404).json({
+        message: "Admin user not found in database",
+      });
+    }
+
+    // Admin check
+    if (existingUser.role !== "admin") {
+      return res.status(403).json({
+        message: "Access denied. Admin only.",
+      });
+    }
+
+    // JWT generate
+    const token = jwt.sign(
+      {
+        id: existingUser._id,
+        name: existingUser.name,
+        email: existingUser.email,
+        role: existingUser.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1d",
+      }
+    );
+
+    console.log("ADMIN LOGIN SUCCESS ✅");
+
+    return res.status(200).json({
+      message: "Admin login successful",
+      token,
+      user: {
+        _id: existingUser._id,
+        name: existingUser.name,
+        email: existingUser.email,
+        role: existingUser.role,
+      },
+    });
+
+  } catch (error) {
+    console.error(
+      "CLERK ADMIN LOGIN ERROR =>",
+      error
+    );
+
+    return res.status(500).json({
+      message: "Server Error",
+    });
+  }
+};
+
 module.exports = {
   postRegister,
   postLogin,
+  clerkAdminLogin,
 };

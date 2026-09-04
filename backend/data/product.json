@@ -1,6 +1,6 @@
 {
   "lipsticks": [
-    { "id": 4, "name": "Berry Luxe Matte", "price": 529, "type": "matte", "image": "https://smytten-image.gumlet.io/shop_item/REC003AE1441.jpg","description": "Long-lasting matte lipstick with rich color and smooth finish." },
+    { "id": 4, "name": "Berry Luxe Matte", "price": 529, "type": "matte", "image": "https://smytten-image.gumlet.io/shop_item/REC003AE1441.jpg"},
   { "id": 1, "name": "Velvet Touch Matte", "price": 499, "type": "matte", "image": "https://goshcopenhagen.com/media/catalog/product/cache/25f8177aba4b3177f677dbebbbda0bce/5/7/5711914064228.jpg"  },
   { "id": 2, "name": "Crimson Kiss Matte", "price": 549, "type": "matte", "image":"https://cdn.tirabeauty.com/v2/billowing-snowflake-434234/tira-p/wrkr/products/pictures/item/free/resize-w:540/1142830/R_mGzgPj5Wj-1142830_1.jpg" },
   { "id": 3, "name": "Nude Elegance Matte", "price": 479, "type": "matte", "image": "https://m.media-amazon.com/images/I/51d9x86bXqL._AC_UF1000,1000_QL80_.jpg"},
@@ -10,7 +10,7 @@
   { "id": 8, "name": "Berry Liquid Luxe", "price": 479, "type": "liquid", "image": "https://images.jdmagicbox.com/quickquotes/images_main/color-luxe-matte-lip-color-lips-flirty-berry-m15-2224266686-rcwovu7y.jpg" },
   { "id": 9, "name": "Plum Cream Touch", "price": 529, "type": "cream", "image": "https://m.media-amazon.com/images/I/61Jm1YFmZbL._AC_UF1000,1000_QL80_.jpg" },
 
-  { "id": 16, "name": "Velvet Mauve Gloss", "price": 499, "type": "glossy", "image": "" },
+  { "id": 16, "name": "Velvet Mauve Gloss", "price": 499, "type": "glossy", "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJOcQ4VLFaUwliZYhR56VhP9YkGbI9umfnTg&s" },
   { "id": 17, "name": "Soft Velvet Mauve Shine", "price": 549, "type": "glossy", "image": "" },
   { "id": 18, "name": "Dusty Elegant Mauve Liquid", "price": 479, "type": "liquid", "image": ""},
   { "id": 19, "name": "Mauve Cream Luxe", "price": 529, "type": "cream", "image": "" },
@@ -34,7 +34,7 @@
   { "id": 41, "name": "C + Ferulic Skin Repair Serum", "price": 629, "type": "serum", "image": "" },
 
   { "id": 45, "name": "Hydra Gel Moisturizer", "price": 499, "type": "moisturizer", "image": ""},
-  { "id": 46, "name": "Ceramide Barrier Repair Gel", "price": 549, "type": "moisturizer", "image": "" },
+  { "id": 46, "name": "Ceramide Barrier Repair Gel", "price": 549, "type": "moisturizer", "image": "  " },
   { "id": 47, "name": "Niacinamide Oil-Free Moisturizer", "price": 479, "type": "moisturizer", "image": "" },
   { "id": 48, "name": "Daily Hydration Gel Cream", "price": 529, "type": "moisturizer", "image": "" },
 

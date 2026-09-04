@@ -1,6 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
+import api from "../api/axios";
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await api.post("/api/contact", formData);
+
+      alert(response.data.message);
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("Contact form error:", error);
+
+      alert(
+        error.response?.data?.message ||
+          "Something went wrong. Please try again."
+      );
+    }
+  };
+
   return (
     <div
       style={{
@@ -50,21 +89,24 @@ const Contact = () => {
           <h3 style={{ color: "#c2185b", marginBottom: "20px" }}>
             📍 Get In Touch
           </h3>
+
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr)",
+              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
               gap: "20px",
             }}
           >
             <div>
               <h5>📱 Phone</h5>
-              <p>+91 98765 43210</p>
+              <p>+91 7499212105</p>
             </div>
+
             <div>
               <h5>✉️ Email</h5>
-              <p>hello@glowbliss.com</p>
+              <p>hello@rosebliss.com</p>
             </div>
+
             <div>
               <h5>📍 Address</h5>
               <p>
@@ -73,6 +115,7 @@ const Contact = () => {
                 India 400001
               </p>
             </div>
+
             <div>
               <h5>🕒 Hours</h5>
               <p>
@@ -96,11 +139,20 @@ const Contact = () => {
           <h3 style={{ color: "#c2185b", marginBottom: "25px" }}>
             ✍️ Send Message
           </h3>
-          <form style={{ display: "grid", gap: "20px" }}>
+
+          <form
+            onSubmit={handleSubmit}
+            style={{ display: "grid", gap: "20px" }}
+          >
+            {/* Name */}
             <div>
               <input
                 type="text"
+                name="name"
                 placeholder="Your Name"
+                value={formData.name}
+                onChange={handleChange}
+                required
                 style={{
                   width: "100%",
                   padding: "15px",
@@ -109,11 +161,14 @@ const Contact = () => {
                   fontSize: "16px",
                   transition: "border-color 0.3s",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#c2185b")}
+                onFocus={(e) =>
+                  (e.target.style.borderColor = "#c2185b")
+                }
                 onBlur={(e) => (e.target.style.borderColor = "#eee")}
               />
             </div>
 
+            {/* Email + Phone */}
             <div
               style={{
                 display: "grid",
@@ -123,7 +178,11 @@ const Contact = () => {
             >
               <input
                 type="email"
+                name="email"
                 placeholder="Email Address"
+                value={formData.email}
+                onChange={handleChange}
+                required
                 style={{
                   width: "100%",
                   padding: "15px",
@@ -131,12 +190,19 @@ const Contact = () => {
                   borderRadius: "10px",
                   fontSize: "16px",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#c2185b")}
+                onFocus={(e) =>
+                  (e.target.style.borderColor = "#c2185b")
+                }
                 onBlur={(e) => (e.target.style.borderColor = "#eee")}
               />
+
               <input
                 type="tel"
+                name="phone"
                 placeholder="Phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
                 style={{
                   width: "100%",
                   padding: "15px",
@@ -144,14 +210,21 @@ const Contact = () => {
                   borderRadius: "10px",
                   fontSize: "16px",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#c2185b")}
+                onFocus={(e) =>
+                  (e.target.style.borderColor = "#c2185b")
+                }
                 onBlur={(e) => (e.target.style.borderColor = "#eee")}
               />
             </div>
 
+            {/* Message */}
             <textarea
+              name="message"
               rows="5"
               placeholder="Your Message"
+              value={formData.message}
+              onChange={handleChange}
+              required
               style={{
                 width: "100%",
                 padding: "15px",
@@ -161,14 +234,18 @@ const Contact = () => {
                 fontFamily: "Arial",
                 resize: "vertical",
               }}
-              onFocus={(e) => (e.target.style.borderColor = "#c2185b")}
+              onFocus={(e) =>
+                (e.target.style.borderColor = "#c2185b")
+              }
               onBlur={(e) => (e.target.style.borderColor = "#eee")}
             ></textarea>
 
+            {/* Submit Button */}
             <button
               type="submit"
               style={{
-                background: "linear-gradient(135deg, #c2185b, #e91e63)",
+                background:
+                  "linear-gradient(135deg, #c2185b, #e91e63)",
                 color: "white",
                 padding: "15px 30px",
                 border: "none",
@@ -180,7 +257,8 @@ const Contact = () => {
               }}
               onMouseOver={(e) => {
                 e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = "0 10px 20px rgba(194, 24, 91, 0.3)";
+                e.target.style.boxShadow =
+                  "0 10px 20px rgba(194, 24, 91, 0.3)";
               }}
               onMouseOut={(e) => {
                 e.target.style.transform = "translateY(0)";

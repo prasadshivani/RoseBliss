@@ -16,6 +16,7 @@ const connectDB = require("./config/connectDB");
 const errorMiddleware = require("./middleware/errorMiddleware");
 const adminProductRoutes = require("./routes/adminProductRoutes");
 const couponRoutes = require("./routes/couponRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/coupons", couponRoutes);
+app.use("/api/contact", contactRoutes);
 
 app.get("/home", (req, res) => {
   res.send("welcome");
