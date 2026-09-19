@@ -17,9 +17,9 @@ const Cart = ({ cart, setCart, onOrderPlaced }) => {
     city: "",
     pincode: "",
   });
-const [couponCode, setCouponCode] = useState("");
-const [discount, setDiscount] = useState(0);
-const [finalTotal, setFinalTotal] = useState(0);
+  const [couponCode, setCouponCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [finalTotal, setFinalTotal] = useState(0);
   const increaseQty = async (id) => {
     setCart(
       cart.map((item) =>
@@ -72,140 +72,120 @@ const [finalTotal, setFinalTotal] = useState(0);
     0,
   );
   useEffect(() => {
-  setFinalTotal(totalPrice - discount);
-}, [totalPrice, discount]);
+    setFinalTotal(totalPrice - discount);
+  }, [totalPrice, discount]);
 
-useEffect(() => {
-  const script = document.createElement("script");
-  script.src = "https://checkout.razorpay.com/v1/checkout.js";
-  script.async = true;
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
 
-  document.body.appendChild(script);
+    document.body.appendChild(script);
 
-  return () => {
-    document.body.removeChild(script);
-  };
-}, []);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleCheckout = () => {
-  setFinalTotal(totalPrice);
-  setShowCheckout(true);
-};
+    setFinalTotal(totalPrice);
+    setShowCheckout(true);
+  };
   const applyCoupon = async () => {
-  if (!couponCode) {
-    toast.error("Enter Coupon Code");
-    return;
-  }
+    if (!couponCode) {
+      toast.error("Enter Coupon Code");
+      return;
+    }
 
-  try {
-    const res = await api.post("/api/coupons/apply", {
-      code: couponCode,
-      total: totalPrice,
-    });
+    try {
+      const res = await api.post("/api/coupons/apply", {
+        code: couponCode,
+        total: totalPrice,
+      });
 
-    setDiscount(res.data.discount);
-    setFinalTotal(res.data.finalTotal);
+      setDiscount(res.data.discount);
+      setFinalTotal(res.data.finalTotal);
 
-    toast.success("Coupon Applied Successfully 🎉");
-  } catch (err) {
-    toast.error(
-      err.response?.data?.message || "Invalid Coupon"
-    );
-  }
-};
-
-
+      toast.success("Coupon Applied Successfully 🎉");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Invalid Coupon");
+    }
+  };
 
   // ✅ Real Razorpay flow
-const handlePayment = async () => {
-  if (
-    !formData.name ||
-    !formData.email ||
-    !formData.phone ||
-    !formData.address ||
-    !formData.city ||
-    !formData.pincode
-  ) {
-    toast.error("Please fill in all shipping details first!");
-    return;
-  }
+  const handlePayment = async () => {
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.address ||
+      !formData.city ||
+      !formData.pincode
+    ) {
+      toast.error("Please fill in all shipping details first!");
+      return;
+    }
 
-  if (!window.Razorpay) {
-    toast.error("Razorpay is still loading. Please try again.");
-    return;
-  }
+    if (!window.Razorpay) {
+      toast.error("Razorpay is still loading. Please try again.");
+      return;
+    }
 
-  setIsProcessing(true);
+    setIsProcessing(true);
 
-  try {
-    // STEP 1: Create Razorpay order
-    const orderResponse = await api.post(
-      "/api/payment/create-order",
-      {
+    try {
+      // STEP 1: Create Razorpay order
+      const orderResponse = await api.post("/api/payment/create-order", {
         amount: finalTotal || totalPrice,
-      }
-    );
+      });
 
-    console.log("RAZORPAY ORDER =>", orderResponse.data);
+      console.log("RAZORPAY ORDER =>", orderResponse.data);
 
-    const {
-      orderId,
-      amount,
-      currency,
-      keyId,
-    } = orderResponse.data;
+      const { orderId, amount, currency, keyId } = orderResponse.data;
 
-    // STEP 2: Open Razorpay popup
-    const options = {
-      key: keyId,
-      amount: amount,
-      currency: currency,
+      // STEP 2: Open Razorpay popup
+      const options = {
+        key: keyId,
+        amount: amount,
+        currency: currency,
 
-      name: "RoseBliss",
-      description: "RoseBliss Order",
+        name: "RoseBliss",
+        description: "RoseBliss Order",
 
-      order_id: orderId,
+        order_id: orderId,
 
-      prefill: {
-        name: formData.name,
-        email: formData.email,
-        contact: formData.phone,
-      },
+        prefill: {
+          name: formData.name,
+          email: formData.email,
+          contact: formData.phone,
+        },
 
-      notes: {
-        address: formData.address,
-        city: formData.city,
-        pincode: formData.pincode,
-      },
+        notes: {
+          address: formData.address,
+          city: formData.city,
+          pincode: formData.pincode,
+        },
 
-      theme: {
-        color: "#ec4899",
-      },
+        theme: {
+          color: "#ec4899",
+        },
 
-      // STEP 3: Payment successful
-      handler: async function (response) {
-        console.log(
-          "RAZORPAY PAYMENT RESPONSE =>",
-          response
-        );
+        // STEP 3: Payment successful
+        handler: async function (response) {
+          console.log("RAZORPAY PAYMENT RESPONSE =>", response);
 
-        try {
-          // STEP 4: Verify payment
-          const verifyResponse = await api.post(
-            "/api/payment/verify",
-            {
-              razorpay_order_id:
-                response.razorpay_order_id,
+          try {
+            // STEP 4: Verify payment
+            const verifyResponse = await api.post("/api/payment/verify", {
+              razorpay_order_id: response.razorpay_order_id,
 
-              razorpay_payment_id:
-                response.razorpay_payment_id,
+              razorpay_payment_id: response.razorpay_payment_id,
 
-              razorpay_signature:
-                response.razorpay_signature,
+              razorpay_signature: response.razorpay_signature,
 
               userId: user._id,
 
@@ -220,92 +200,62 @@ const handlePayment = async () => {
               total: finalTotal || totalPrice,
 
               shippingDetails: formData,
+            });
+
+            console.log("VERIFY RESPONSE =>", verifyResponse.data);
+
+            if (verifyResponse.data.success) {
+              setCart([]);
+              setOrderSuccess(true);
+
+              toast.success("Payment Successful & Order Placed 🎉");
             }
-          );
+          } catch (error) {
+            console.error("PAYMENT VERIFY ERROR =>", error);
 
-          console.log(
-            "VERIFY RESPONSE =>",
-            verifyResponse.data
-          );
+            console.error("SERVER RESPONSE =>", error.response?.data);
 
-          if (verifyResponse.data.success) {
-            setCart([]);
-            setOrderSuccess(true);
-
-            toast.success(
-              "Payment Successful & Order Placed 🎉"
+            toast.error(
+              error.response?.data?.message || "Payment verification failed",
             );
+          } finally {
+            setIsProcessing(false);
           }
-        } catch (error) {
-          console.error(
-            "PAYMENT VERIFY ERROR =>",
-            error
-          );
-
-          console.error(
-            "SERVER RESPONSE =>",
-            error.response?.data
-          );
-
-          toast.error(
-            error.response?.data?.message ||
-              "Payment verification failed"
-          );
-        } finally {
-          setIsProcessing(false);
-        }
-      },
-
-      // User closes Razorpay popup
-      modal: {
-        ondismiss: function () {
-          setIsProcessing(false);
-          toast.info("Payment cancelled");
         },
-      },
-    };
 
-    // STEP 5: Create Razorpay instance
-    const razorpay = new window.Razorpay(options);
+        // User closes Razorpay popup
+        modal: {
+          ondismiss: function () {
+            setIsProcessing(false);
+            toast.info("Payment cancelled");
+          },
+        },
+      };
 
-    // Payment failed
-    razorpay.on("payment.failed", function (response) {
-      console.error(
-        "PAYMENT FAILED =>",
-        response.error
-      );
+      // STEP 5: Create Razorpay instance
+      const razorpay = new window.Razorpay(options);
+
+      // Payment failed
+      razorpay.on("payment.failed", function (response) {
+        console.error("PAYMENT FAILED =>", response.error);
+
+        setIsProcessing(false);
+
+        toast.error(response.error?.description || "Payment failed");
+      });
+
+      // STEP 6: Open popup
+      razorpay.open();
+    } catch (error) {
+      console.error("RAZORPAY ORDER ERROR =>", error);
+
+      console.error("SERVER RESPONSE =>", error.response?.data);
+
+      toast.error(error.response?.data?.message || "Unable to start payment");
 
       setIsProcessing(false);
-
-      toast.error(
-        response.error?.description ||
-          "Payment failed"
-      );
-    });
-
-    // STEP 6: Open popup
-    razorpay.open();
-  } catch (error) {
-    console.error(
-      "RAZORPAY ORDER ERROR =>",
-      error
-    );
-
-    console.error(
-      "SERVER RESPONSE =>",
-      error.response?.data
-    );
-
-    toast.error(
-      error.response?.data?.message ||
-        "Unable to start payment"
-    );
-
-    setIsProcessing(false);
-  }
-};
-
-
+    }
+  };
 
   const handleBackToCart = () => {
     setShowCheckout(false);
@@ -358,104 +308,101 @@ const handlePayment = async () => {
               <div className="card shadow-sm rounded-4 p-3">
                 <h4 className="mb-3">Order Summary ({cart.length} items)</h4>
 
-{cart.map((item) => (
-  <div
-    key={item._id}
-    className="d-flex align-items-center mb-3 pb-2 border-bottom"
-  >
-    <img
-      src={item.image}
-      alt={item.name}
-      style={{
-        width: "60px",
-        height: "60px",
-        borderRadius: "8px",
-        objectFit: "cover",
-      }}
-    />
+                {cart.map((item) => (
+                  <div
+                    key={item._id}
+                    className="d-flex align-items-center mb-3 pb-2 border-bottom"
+                  >
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                      style={{
+                        width: "60px",
+                        height: "60px",
+                        borderRadius: "8px",
+                        objectFit: "cover",
+                      }}
+                    />
 
-    <div className="ms-3 flex-grow-1">
-      <h6 className="mb-0">{item.name}</h6>
-      <small className="text-muted">
-        Qty: {item.quantity} × ₹{item.price}
-      </small>
-    </div>
+                    <div className="ms-3 flex-grow-1">
+                      <h6 className="mb-0">{item.name}</h6>
+                      <small className="text-muted">
+                        Qty: {item.quantity} × ₹{item.price}
+                      </small>
+                    </div>
 
-    <span className="fw-bold">
-      ₹{item.price * item.quantity}
-    </span>
-  </div>
-))}
+                    <span className="fw-bold">
+                      ₹{item.price * item.quantity}
+                    </span>
+                  </div>
+                ))}
 
-<hr />
+                <hr />
 
-<h5 className="mb-3">🎁 Apply Coupon</h5>
+                <h5 className="mb-3">🎁 Apply Coupon</h5>
 
-<div className="d-flex mb-3">
-  <input
-    type="text"
-    className="form-control"
-    placeholder="Enter Coupon Code"
-    value={couponCode}
-    onChange={(e) => setCouponCode(e.target.value)}
-  />
+                <div className="d-flex mb-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter Coupon Code"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                  />
 
-  <button
-    type="button"
-    className="btn btn-success ms-2"
-    onClick={applyCoupon}
-  >
-    Apply
-  </button>
-</div>
+                  <button
+                    type="button"
+                    className="btn btn-success ms-2"
+                    onClick={applyCoupon}
+                  >
+                    Apply
+                  </button>
+                </div>
 
-<div className="mt-3 pt-2 border-top">
-  <div className="d-flex justify-content-between">
-    <h6>Subtotal</h6>
-    <h6>₹{totalPrice}</h6>
-  </div>
+                <div className="mt-3 pt-2 border-top">
+                  <div className="d-flex justify-content-between">
+                    <h6>Subtotal</h6>
+                    <h6>₹{totalPrice}</h6>
+                  </div>
 
-  <div className="d-flex justify-content-between">
-    <h6>Shipping</h6>
-    <h6 className="text-success">Free</h6>
-  </div>
+                  <div className="d-flex justify-content-between">
+                    <h6>Shipping</h6>
+                    <h6 className="text-success">Free</h6>
+                  </div>
 
-  <div className="d-flex justify-content-between">
-    <h6>Tax</h6>
-    <h6>₹0</h6>
-  </div>
+                  <div className="d-flex justify-content-between">
+                    <h6>Tax</h6>
+                    <h6>₹0</h6>
+                  </div>
 
-  <div className="d-flex justify-content-between">
-    <h6>Discount</h6>
-    <h6 className="text-danger">
-      -₹{discount.toFixed(2)}
-    </h6>
-  </div>
+                  <div className="d-flex justify-content-between">
+                    <h6>Discount</h6>
+                    <h6 className="text-danger">-₹{discount.toFixed(2)}</h6>
+                  </div>
 
-  <hr />
+                  <hr />
 
-  <div className="d-flex justify-content-between">
-    <h4 className="mb-0">Final Total</h4>
-    <h4 className="fw-bold text-success">
-      ₹{(finalTotal || totalPrice).toFixed(2)}
-    </h4>
-  </div>
-</div>
+                  <div className="d-flex justify-content-between">
+                    <h4 className="mb-0">Final Total</h4>
+                    <h4 className="fw-bold text-success">
+                      ₹{(finalTotal || totalPrice).toFixed(2)}
+                    </h4>
+                  </div>
+                </div>
 
-<div className="mt-4 p-3 bg-light rounded-3">
-  <h6 className="mb-2">💳 Payment Methods</h6>
+                <div className="mt-4 p-3 bg-light rounded-3">
+                  <h6 className="mb-2">💳 Payment Methods</h6>
 
-  <div className="d-flex gap-2 flex-wrap">
-    <span className="badge bg-secondary">UPI</span>
-    <span className="badge bg-secondary">Card</span>
-    <span className="badge bg-secondary">Net Banking</span>
-    <span className="badge bg-secondary">Wallet</span>
-  </div>
-</div>
+                  <div className="d-flex gap-2 flex-wrap">
+                    <span className="badge bg-secondary">UPI</span>
+                    <span className="badge bg-secondary">Card</span>
+                    <span className="badge bg-secondary">Net Banking</span>
+                    <span className="badge bg-secondary">Wallet</span>
+                  </div>
+                </div>
               </div>
             </div>
             <hr />
-
 
             <div className="col-lg-7">
               <form className="card shadow-sm rounded-4 p-4">
@@ -535,21 +482,21 @@ const handlePayment = async () => {
                   Pay.
                 </div>
                 <button
-  type="button"
-  disabled={isProcessing}
-  className="btn w-100 py-3 fw-bold rounded-4 fs-5"
-  style={{
-    background: isProcessing
-      ? "#ccc"
-      : "linear-gradient(45deg, #ec4899, #f472b6)",
-    color: "white",
-  }}
-  onClick={handlePayment}
->
-  {isProcessing
-    ? "⏳ Placing Order..."
-    : `Place Order • ₹${finalTotal || totalPrice} 💖`}
-</button>
+                  type="button"
+                  disabled={isProcessing}
+                  className="btn w-100 py-3 fw-bold rounded-4 fs-5"
+                  style={{
+                    background: isProcessing
+                      ? "#ccc"
+                      : "linear-gradient(45deg, #ec4899, #f472b6)",
+                    color: "white",
+                  }}
+                  onClick={handlePayment}
+                >
+                  {isProcessing
+                    ? "⏳ Placing Order..."
+                    : `Place Order • ₹${finalTotal || totalPrice} 💖`}
+                </button>
                 <div className="text-center mt-3">
                   <small className="text-muted">
                     🔒 Secured by Razorpay | UPI, Cards, Net Banking & Wallets
