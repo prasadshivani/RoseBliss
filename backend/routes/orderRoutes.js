@@ -1,3 +1,4 @@
+
 const express = require("express");
 
 const {
@@ -9,19 +10,14 @@ const {
 } = require("../controllers/orderController");
 
 const verifyToken = require("../middleware/authMiddleware");
-
 const {
   validateOrderPlace,
 } = require("../middleware/validationMiddleware");
-
 const adminMiddleware = require("../middleware/adminMiddleware");
 
 const router = express.Router();
 
-
-// ===============================
 // Place Order
-// ===============================
 router.post(
   "/place",
   verifyToken,
@@ -29,10 +25,14 @@ router.post(
   placeOrder
 );
 
+// Customer - Get Own Orders
+router.get(
+  "/my-orders",
+  verifyToken,
+  getMyOrders
+);
 
-// ===============================
 // Admin - Get All Orders
-// ===============================
 router.get(
   "/admin/all",
   verifyToken,
@@ -40,10 +40,7 @@ router.get(
   getAllOrders
 );
 
-
-// ===============================
-// Admin - Update Order Status
-// ===============================
+// Admin - Update Order Status and Tracking
 router.put(
   "/admin/update/:id",
   verifyToken,
@@ -51,25 +48,11 @@ router.put(
   updateOrderStatus
 );
 
-
-// ===============================
-// User - Cancel Order
-// ===============================
+// Customer - Cancel Own Order
 router.put(
   "/cancel/:id",
   verifyToken,
   cancelOrder
 );
-
-
-// ===============================
-// User - Get My Orders
-// ===============================
-router.get(
-  "/:userId",
-  verifyToken,
-  getMyOrders
-);
-
 
 module.exports = router;

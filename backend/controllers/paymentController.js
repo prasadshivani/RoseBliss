@@ -141,7 +141,114 @@ const verifyPaymentAndPlaceOrder = async (req, res) => {
   }
 };
 
+
+const requestOrderRefund = async (req, res) => {
+  try {
+    // This endpoint must be restricted to authorized admins.
+    const order = await Order.findById(req.params.orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    if (
+      order.paymentMethod !== "Razorpay" ||
+      !order.paymentId ||
+      order.paymentStatus !== "Paid"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "No eligible paid Razorpay order found",
+      });
+    }
+
+    if (
+      ["Pending", "Processed"].includes(order.refundStatus) ||
+      order.paymentStatus === "Refund Pending" ||
+      order.paymentStatus === "Refunded"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Refund is already pending or completed",
+      });
+    }
+
+    // Verify the payment directly with Razorpay.
+    const payment = await razorpay.payments.fetch(order.paymentId);
+
+    if (
+      payment.status !== "captured" ||
+      payment.amount !== Math.round(order.total * 100)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment is not captured or amount does not match",
+      });
+    }
+
+    // Mark pending before making the external API request.
+    order.refundStatus = "Pending";
+    order.paymentStatus = "Refund Pending";
+    await order.save();
+
+    try {
+      const refund = await razorpay.payments.refund(
+        order.paymentId,
+        {
+          amount: payment.amount,
+          notes: {
+            orderId: String(order._id),
+            reason: "RoseBliss order refund",
+          },
+        }
+      );
+
+      order.refundId = refund.id;
+
+      if (refund.status === "processed") {
+        order.refundStatus = "Processed";
+        order.paymentStatus = "Refunded";
+      } else if (refund.status === "failed") {
+        order.refundStatus = "Failed";
+        order.paymentStatus = "Paid";
+      }
+
+      await order.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Refund request submitted to Razorpay",
+        refundId: refund.id,
+        refundStatus: order.refundStatus,
+        order,
+      });
+    } catch (refundError) {
+      console.error("RAZORPAY REFUND ERROR =>", refundError);
+
+      // Keep the order pending if the result is uncertain.
+      // Check Razorpay Dashboard before attempting another refund.
+      return res.status(502).json({
+        success: false,
+        message:
+          "Refund result could not be confirmed. Check Razorpay Dashboard before retrying.",
+      });
+    }
+  } catch (error) {
+    console.error("REFUND REQUEST ERROR =>", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Could not verify payment or request refund",
+    });
+  }
+};
+
+
 module.exports = {
   createRazorpayOrder,
   verifyPaymentAndPlaceOrder,
+  requestOrderRefund,
 };
