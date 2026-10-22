@@ -1,12 +1,12 @@
-import React from 'react'
-import Section from './section'
+import React from "react";
+import Section from "./Section";
 
 const home = () => {
   return (
     <div>
-      <Section/>
+      <Section />
     </div>
-  )
-}
+  );
+};
 
-export default home
+export default home;
