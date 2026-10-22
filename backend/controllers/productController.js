@@ -1,4 +1,4 @@
-const Product = require("../models/Product");
+const Product = require("../models/product");
 
 // Add Product
 const addProduct = async (req, res) => {
@@ -140,7 +140,7 @@ const addReview = async (req, res) => {
 
     // Check if user already reviewed
     const alreadyReviewed = product.reviews.find(
-      (review) => review.user.toString() === req.user.id
+      (review) => review.user.toString() === req.user.id,
     );
 
     if (alreadyReviewed) {
@@ -162,10 +162,8 @@ const addReview = async (req, res) => {
     product.numReviews = product.reviews.length;
 
     product.averageRating =
-      product.reviews.reduce(
-        (sum, item) => sum + item.rating,
-        0
-      ) / product.reviews.length;
+      product.reviews.reduce((sum, item) => sum + item.rating, 0) /
+      product.reviews.length;
 
     await product.save();
 
@@ -173,7 +171,6 @@ const addReview = async (req, res) => {
       success: true,
       message: "Review Added Successfully",
     });
-
   } catch (error) {
     console.log("ADD REVIEW ERROR =>", error);
 
@@ -193,14 +190,10 @@ const updateProduct = async (req, res) => {
       updateData.image = req.file.path;
     }
 
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const product = await Product.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!product) {
       return res.status(404).json({
