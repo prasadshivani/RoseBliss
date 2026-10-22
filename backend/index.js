@@ -19,6 +19,13 @@ const couponRoutes = require("./routes/couponRoutes");
 const contactRoutes = require("./routes/contactRoutes");
 
 const app = express();
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "RoseBliss Backend is Running",
+    database: "Connected",
+  });
+});
 
 // Security Headers
 app.use(helmet());
